@@ -1,0 +1,4 @@
+<http://example.org/people/Linda> <http://xmlns.com/foaf/0.1/knows> <http://example.org/people/Mike> .
+<http://example.org/people/Bob> <http://xmlns.com/foaf/0.1/knows> <http://example.org/people/Linda> .
+<http://example.org/people/Jane> <http://xmlns.com/foaf/0.1/knows> <http://example.org/people/Sarah> .
+
