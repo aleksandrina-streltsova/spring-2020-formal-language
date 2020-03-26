@@ -1,0 +1,7 @@
+S A B C
+S D S
+A eps
+B A C
+C eps
+D d
+F eps A
