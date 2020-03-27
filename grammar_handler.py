@@ -107,7 +107,8 @@ class Grammar:
             right = rule.left
             for left in self.nonterm_alphabet.union({self.initial}):
                 if nx.has_path(graph, left, right):
-                    new_rules.add(Rule(left, rule.right))
+                    if not (len(rule.right) == 1 and rule.right[0] in self.nonterm_alphabet):
+                        new_rules.add(Rule(left, rule.right))
         self.rules = self.rules.union(new_rules).difference(unit_rules)
 
     def eliminate_nongenereting_nonterms(self):

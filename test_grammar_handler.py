@@ -27,6 +27,7 @@ def test_eliminate_eps_rules():
 
     assert (set(filter(lambda rule: rule.right == (grammar.epsilon,), grammar.rules))
             == {Rule(grammar.initial, (grammar.epsilon,))})
+    assert (len(grammar.rules) == 15)
 
 
 def test_eliminate_unit_rules():
@@ -36,6 +37,7 @@ def test_eliminate_unit_rules():
 
     assert (Rule('S', ('a', 'b')) in grammar.rules)
     assert (Rule('A', ('a', 'b')) in grammar.rules)
+    assert (len(grammar.rules) == 4)
 
 
 def test_eliminate_nongenerating_nonterms():
@@ -75,6 +77,7 @@ def test_to_cnf1():
     grammar2 = Grammar()
     grammar2.parse('tests/grammar5.txt')
 
+    assert (len(grammar1.rules) == len(grammar2.rules))
     assert (grammar1.rules == grammar2.rules)
 
 
@@ -90,6 +93,7 @@ def test_to_cnf2():
         is_third_type = len(rule.right) == 2 and rule.right[0] in grammar.nonterm_alphabet and\
             rule.right[1] in grammar.nonterm_alphabet
         assert (is_first_type or is_second_type or is_third_type)
+    assert(len(grammar.rules) == 10)
 
 
 if __name__ == '__main__':
