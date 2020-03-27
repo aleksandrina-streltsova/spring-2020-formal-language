@@ -7,20 +7,14 @@ def test_parse_grammar():
     grammar = Grammar()
     grammar.parse('tests/grammar1.txt')
 
-    assert (len(grammar.nonterm_alphabet) == 0)
+    assert (len(grammar.nonterm_alphabet) == 1)
     assert (grammar.term_alphabet == {'a', 'b'})
-    assert (len(grammar.rules) == 2)
+    assert (len(grammar.rules) == 3)
 
 
 def test_eliminate_long_rules():
     grammar = Grammar()
-    grammar.add_rule('S a b c d e f')
-    grammar.eliminate_long_rules()
-
-    assert (len(grammar.rules) == 5)
-
-    grammar.add_rule('S A h')
-    grammar.add_rule('A b c d')
+    grammar.parse('tests/grammar6.txt')
     grammar.eliminate_long_rules()
 
     assert (len(grammar.rules) == 8)
@@ -55,20 +49,19 @@ def test_eliminate_nongenerating_nonterms():
 
 def test_eliminate_nonaccessible_nonterms():
     grammar = Grammar()
-    grammar.add_rule('S a b')
-    grammar.add_rule('A c d')
+    grammar.parse('tests/grammar1.txt')
     grammar.eliminate_nonaccessible_nonterms()
 
-    assert (len(grammar.rules) == 1)
-    assert (grammar.rules == {Rule('S', ('a', 'b'))})
+    assert (len(grammar.rules) == 2)
+    assert (grammar.rules == {Rule(grammar.initial, (grammar.epsilon,)), Rule('S', ('a', 'S', 'b', 'S'))})
 
 
 def test_replace_terms_with_nonterms():
     grammar = Grammar()
-    grammar.add_rule('S a b')
+    grammar.parse('tests/grammar3.txt')
     grammar.replace_terms_with_nonterms()
 
-    assert (len(grammar.rules) == 3)
+    assert (len(grammar.rules) == 6)
 
 
 def test_to_cnf1():
