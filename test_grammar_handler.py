@@ -71,7 +71,7 @@ def test_replace_terms_with_nonterms():
     assert (len(grammar.rules) == 3)
 
 
-def test_to_cnf():
+def test_to_cnf1():
     grammar1 = Grammar()
     grammar1.parse('tests/grammar5.txt')
     grammar1.to_cnf()
@@ -80,6 +80,20 @@ def test_to_cnf():
     grammar2.parse('tests/grammar5.txt')
 
     assert (grammar1.rules == grammar2.rules)
+
+
+def test_to_cnf2():
+    grammar = Grammar()
+    grammar.parse('tests/grammar1.txt')
+    grammar.to_cnf()
+
+    assert (Rule(grammar.initial, (grammar.epsilon,)) in grammar.rules)
+    for rule in grammar.rules:
+        is_first_type = rule == Rule(grammar.initial, (grammar.epsilon,))
+        is_second_type = len(rule.right) == 1 and rule.right[0] in grammar.term_alphabet
+        is_third_type = len(rule.right) == 2 and rule.right[0] in grammar.nonterm_alphabet and\
+            rule.right[1] in grammar.nonterm_alphabet
+        assert (is_first_type or is_second_type or is_third_type)
 
 
 if __name__ == '__main__':
