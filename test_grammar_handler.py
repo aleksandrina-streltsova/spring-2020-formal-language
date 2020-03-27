@@ -58,10 +58,13 @@ def test_eliminate_nonaccessible_nonterms():
 
 def test_replace_terms_with_nonterms():
     grammar = Grammar()
-    grammar.parse('tests/grammar3.txt')
+    grammar.parse('tests/grammar4.txt')
     grammar.replace_terms_with_nonterms()
 
     assert (len(grammar.rules) == 6)
+    for rule in grammar.rules:
+        contains_term = len(set(filter(lambda term: term in grammar.term_alphabet, rule.right))) > 0
+        assert(not contains_term or (contains_term and len(rule.right) == 1))
 
 
 def test_to_cnf1():
