@@ -1,5 +1,5 @@
 import pytest
-import fsm_handler
+from src import fsm_handler
 from greenery import fsm
 
 

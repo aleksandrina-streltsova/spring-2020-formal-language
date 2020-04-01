@@ -1,6 +1,6 @@
 import pytest
 
-from grammar_handler import Grammar, Rule
+from src.grammar_handler import Grammar, Rule
 
 
 def test_parse_grammar():
