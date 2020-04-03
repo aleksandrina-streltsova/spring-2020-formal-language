@@ -2,12 +2,12 @@ from collections import deque
 import networkx as nx
 
 
-def load_grammar(fin, fout):
+def convert_grammar_from_file_into_cnf(fin, fout):
     grammar = Grammar()
     grammar.parse(fin)
     grammar.to_cnf()
     grammar.write_grammar(fout)
-    
+
 
 class Rule:
     def __init__(self, left, right):
@@ -31,6 +31,7 @@ class Grammar:
 
     def parse(self, filename):
         with open(filename) as file:
+            self.set_initial(file)
             for line in file.readlines():
                 self.add_rule(line)
 
@@ -42,6 +43,7 @@ class Grammar:
         self.eliminate_nongenereting_nonterms()
         self.eliminate_nonaccessible_nonterms()
         self.replace_terms_with_nonterms()
+        self.update_alphabets()
 
     def eliminate_long_rules(self):
         (symbol, index) = self.__generate_nonterm()
@@ -65,7 +67,7 @@ class Grammar:
         eps_nonterms = set()
         new_rules = set()
         q = deque()
-        for nonterm in self.nonterm_alphabet.union({self.initial}):
+        for nonterm in self.nonterm_alphabet:
             concerned_rules[nonterm] = set()
         counter = {}
         for rule in self.rules:
@@ -77,7 +79,7 @@ class Grammar:
             else:
                 counter[rule] = len(set(rule.right))
             for term in rule.right:
-                if term in self.nonterm_alphabet.union({self.initial}):
+                if term in self.nonterm_alphabet:
                     concerned_rules[term].add(rule)
 
         while len(q) > 0:
@@ -98,14 +100,14 @@ class Grammar:
 
     def eliminate_unit_rules(self):
         unit_rules = list(filter(lambda rule: len(rule.right) == 1 and
-                                              rule.right[0] in self.nonterm_alphabet.union({self.initial}), self.rules))
+                                              rule.right[0] in self.nonterm_alphabet, self.rules))
         graph = nx.DiGraph()
-        graph.add_nodes_from(self.nonterm_alphabet.union({self.initial}))
+        graph.add_nodes_from(self.nonterm_alphabet)
         graph.add_edges_from(map(lambda rule: (rule.left, rule.right[0]), unit_rules))
         new_rules = set()
         for rule in self.rules:
             right = rule.left
-            for left in self.nonterm_alphabet.union({self.initial}):
+            for left in self.nonterm_alphabet:
                 if nx.has_path(graph, left, right):
                     if not (len(rule.right) == 1 and rule.right[0] in self.nonterm_alphabet):
                         new_rules.add(Rule(left, rule.right))
@@ -116,18 +118,18 @@ class Grammar:
         generating_nonterms = set()
         new_rules = set()
         q = deque()
-        for nonterm in self.nonterm_alphabet.union({self.initial}):
+        for nonterm in self.nonterm_alphabet:
             concerned_rules[nonterm] = set()
         counter = {}
         for rule in self.rules:
             counter[rule] = len(set(filter(lambda term: term in
-                                                        self.nonterm_alphabet.union({self.initial}), rule.right)))
+                                                        self.nonterm_alphabet, rule.right)))
             if counter[rule] == 0:
                 if rule.left not in generating_nonterms:
                     q.append(rule.left)
                     generating_nonterms.add(rule.left)
             for term in rule.right:
-                if term in self.nonterm_alphabet.union({self.initial}):
+                if term in self.nonterm_alphabet:
                     concerned_rules[term].add(rule)
 
         while len(q) > 0:
@@ -153,7 +155,7 @@ class Grammar:
                 edges.add((rule.left, right))
 
         graph = nx.DiGraph()
-        graph.add_nodes_from(self.nonterm_alphabet.union({self.initial}))
+        graph.add_nodes_from(self.nonterm_alphabet)
         graph.add_edges_from(edges)
         for nonterm in self.nonterm_alphabet:
             if not nx.has_path(graph, 'S', nonterm):
@@ -187,7 +189,7 @@ class Grammar:
                             new_nonterm = symbol + str(index)
                             self.nonterm_alphabet.add(new_nonterm)
                             term_to_nonterm[term] = new_nonterm
-                            new_rules.add(Rule(new_nonterm, term))
+                            new_rules.add(Rule(new_nonterm, tuple(term)))
                         new_term = term_to_nonterm[term]
                     new_right.append(new_term)
                 new_right = tuple(new_right)
@@ -207,18 +209,26 @@ class Grammar:
                 symbol = max_symbol[:-1] + chr(ord(max_symbol[-1]) + 1)
         return symbol, 0
 
-    def add_rule(self, rule):
-        for symbol in rule.split():
-            if symbol != self.epsilon and symbol != self.initial:
-                if symbol.lower() == symbol:
-                    self.term_alphabet.add(symbol)
-                else:
-                    self.nonterm_alphabet.add(symbol)
+    def set_initial(self, file):
+        first_line = file.readline().split()
+        if len(first_line) > 0:
+            self.initial = first_line[0]
+        file.seek(0)
 
+    def add_rule(self, rule):
+        self.add_symbols_from_iterable(rule.split())
         left, *right = rule.split()
         if not (len(right) == 1 and right[0] == self.epsilon):
             right = filter(lambda symbol: symbol != self.epsilon, right)
         self.rules.add(Rule(left, tuple(right)))
+
+    def add_symbols_from_iterable(self, iterable):
+        for symbol in iterable:
+            if symbol != self.epsilon:
+                if symbol.lower() == symbol:
+                    self.term_alphabet.add(symbol)
+                else:
+                    self.nonterm_alphabet.add(symbol)
 
     def instead_eps_rules(self, eps_nonterms, left, list_left, list_right):
         eps_term_index = -1
@@ -259,3 +269,10 @@ class Grammar:
         with open(filename, 'w') as file:
             for rule in self.rules:
                 file.write(rule.left + ' ' + ' '.join(rule.right) + '\n')
+
+    def update_alphabets(self):
+        self.nonterm_alphabet = set()
+        self.term_alphabet = set()
+        for rule in self.rules:
+            self.nonterm_alphabet.add(rule.left)
+            self.add_symbols_from_iterable(rule.right)

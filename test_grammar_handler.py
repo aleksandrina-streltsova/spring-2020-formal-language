@@ -7,7 +7,7 @@ def test_parse_grammar():
     grammar = Grammar()
     grammar.parse('tests/grammar1.txt')
 
-    assert (len(grammar.nonterm_alphabet) == 1)
+    assert (len(grammar.nonterm_alphabet) == 2)
     assert (grammar.term_alphabet == {'a', 'b'})
     assert (len(grammar.rules) == 3)
 
