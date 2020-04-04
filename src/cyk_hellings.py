@@ -77,7 +77,7 @@ def hellings(grammar, graph):
 
     # инициализируем матрицу
     for v in vertices:
-        for A in right_parts[grammar.epsilon]:
+        for A in right_parts[(grammar.epsilon,)]:
             r_left[v].add((v, A))
             r_right[v].add((v, A))
             t = (v, v, A)
@@ -94,21 +94,24 @@ def hellings(grammar, graph):
 
     # динамика
     while len(m) > 0:
+        new_triples = set()
         v, u, C = m.pop()
         for (w, B) in r_right[v]:
             for A in right_parts[(B, C)]:
                 t = (w, u, A)
                 if t not in r:
-                    r.add(t)
-                    m.append(t)
+                    new_triples.add(t)
 
         for (w, B) in r_left[u]:
             for A in right_parts[(C, B)]:
                 t = (v, w, A)
                 if t not in r:
-                    r.add(t)
-                    m.append(t)
-
+                    new_triples.add(t)
+        for t in new_triples:
+            r.add(t)
+            m.append(t)
+            r_left[t[0]].add((t[1], t[2]))
+            r_right[t[1]].add((t[0], t[2]))
     return set(map(lambda t: (t[0], t[1]), filter(lambda t: t[2] == grammar.initial, r)))
 
 

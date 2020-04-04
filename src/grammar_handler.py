@@ -29,6 +29,12 @@ class Grammar:
         self.initial = 'S'
         self.epsilon = 'eps'
 
+    def __str__(self):
+        result = ''
+        for rule in self.rules:
+            result += rule.left + ' -> ' + ' '.join(rule.right) + '\n'
+        return result
+
     def parse(self, filename):
         with open(filename) as file:
             self.set_initial(file)

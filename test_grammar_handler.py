@@ -5,7 +5,7 @@ from src.grammar_handler import Grammar, Rule
 
 def test_parse_grammar():
     grammar = Grammar()
-    grammar.parse('tests/grammar1.txt')
+    grammar.parse('tests/grammar1_cbs.txt')
 
     assert (len(grammar.nonterm_alphabet) == 2)
     assert (grammar.term_alphabet == {'a', 'b'})
@@ -51,7 +51,7 @@ def test_eliminate_nongenerating_nonterms():
 
 def test_eliminate_nonaccessible_nonterms():
     grammar = Grammar()
-    grammar.parse('tests/grammar1.txt')
+    grammar.parse('tests/grammar1_cbs.txt')
     grammar.eliminate_nonaccessible_nonterms()
 
     assert (len(grammar.rules) == 2)
@@ -83,7 +83,7 @@ def test_to_cnf1():
 
 def test_to_cnf2():
     grammar = Grammar()
-    grammar.parse('tests/grammar1.txt')
+    grammar.parse('tests/grammar1_cbs.txt')
     grammar.to_cnf()
 
     assert (Rule(grammar.initial, (grammar.epsilon,)) in grammar.rules)
