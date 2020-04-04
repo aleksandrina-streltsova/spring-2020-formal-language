@@ -45,6 +45,14 @@ class Grammar:
         self.replace_terms_with_nonterms()
         self.update_alphabets()
 
+    def to_wcnf(self):
+        self.eliminate_long_rules()
+        self.eliminate_unit_rules()
+        self.eliminate_nongenereting_nonterms()
+        self.eliminate_nonaccessible_nonterms()
+        self.replace_terms_with_nonterms()
+        self.update_alphabets()
+
     def eliminate_long_rules(self):
         (symbol, index) = self.__generate_nonterm()
         new_rules = set()
