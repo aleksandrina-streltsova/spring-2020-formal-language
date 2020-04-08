@@ -1,0 +1,14 @@
+S S2 S3
+S3 S3 C
+S3 C
+S2 A B
+S2 A S1
+S1 S2 B
+S S4 S5
+S4 S4 A
+S5 B C
+S5 B S6
+S6 S5 C
+A a
+B b
+C c
