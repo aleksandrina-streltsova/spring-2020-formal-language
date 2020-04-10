@@ -1,5 +1,6 @@
 from src.grammar_handler import Grammar, Rule
 from collections import defaultdict, deque
+from src.utils import load_word, load_graph, right_parts_dict
 
 
 def grammar_contains_word(grammar_file, word_file):
@@ -10,32 +11,12 @@ def grammar_contains_word(grammar_file, word_file):
     return cyk(grammar, word)
 
 
-def grammar_connected_vertices(grammar_file, graph_file):
+def grammar_connected_vertices_hellings(grammar_file, graph_file):
     grammar = Grammar()
     grammar.parse(grammar_file)
     grammar.to_wcnf()
     graph = load_graph(graph_file)
     return hellings(grammar, graph)
-
-
-def load_word(word_file, epsilon):
-    with open(word_file) as file:
-        word = tuple(filter(lambda symbol: symbol != epsilon, file.readline().split()))
-        if len(word) == 0:
-            return epsilon,
-        return word
-
-
-def load_graph(graph_file):
-    edges = set()
-    vertices = set()
-    with open(graph_file) as file:
-        for line in file.readlines():
-            edge = line.split()
-            edges.add((int(edge[0]), int(edge[2]), edge[1]))
-            vertices.add(int(edge[0]))
-            vertices.add(int(edge[2]))
-    return vertices, edges
 
 
 def cyk(grammar, word):
@@ -92,7 +73,7 @@ def hellings(grammar, graph):
                 r.add(t)
                 m.append(t)
 
-    # динамика
+    # алгоритм
     while len(m) > 0:
         new_triples = set()
         v, u, C = m.pop()
@@ -114,9 +95,3 @@ def hellings(grammar, graph):
             r_right[t[1]].add((t[0], t[2]))
     return set(map(lambda t: (t[0], t[1]), filter(lambda t: t[2] == grammar.initial, r)))
 
-
-def right_parts_dict(grammar):
-    right_parts = defaultdict(set)
-    for rule in grammar.rules:
-        right_parts[rule.right].add(rule.left)
-    return right_parts
