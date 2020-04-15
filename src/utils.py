@@ -1,5 +1,7 @@
 from collections import defaultdict
 
+from src import fsm_handler
+
 
 def load_word(word_file, epsilon):
     with open(word_file) as file:
@@ -26,3 +28,23 @@ def right_parts_dict(grammar):
     for rule in grammar.rules:
         right_parts[rule.right].add(rule.left)
     return right_parts
+
+
+# грамматика с расширенным представлением правой части
+def load_grammar(grammar_file):
+    grammar = {}
+    initial = ''
+    with open(grammar_file) as file:
+        for line in file.readlines():
+            nonterm = line[0]
+            if initial == '':
+                initial = nonterm
+            regex = line[2:].replace('eps', '').replace(' ', '')
+            grammar[nonterm] = fsm_handler.regex_to_dfsm(regex)
+    return (initial, grammar)
+
+
+if __name__ == '__main__':
+    grammar = load_grammar('C:/Users/Aleksandrina/Desktop/streltsova.aleksandrina/formal-language/spring-2020-formal-language/tests/grammar11_fsm.txt')
+    for fsm in grammar.values():
+        print(fsm)
