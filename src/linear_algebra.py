@@ -130,7 +130,11 @@ def transitive_closure1(matrix, k):
 def transitive_closure2(matrix, k):
     pow = 1
     while pow < k:
+        before = matrix.count_nonzero()
         matrix = matrix + matrix ** 2
+        after = matrix.count_nonzero()
+        if before == after:
+            break
         pow *= 2
     return matrix
 
