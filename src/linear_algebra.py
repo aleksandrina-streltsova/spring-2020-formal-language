@@ -38,19 +38,23 @@ def cfpq_matrix(grammar, graph):
         matrices[A].setdiag(1)
 
     # алгоритм
+    rules = set()  # отберем правила длины 2
+    for rule in grammar.rules:
+        if len(rule.right) == 2:
+            rules.add(rule)
+
     is_changing = True
     while is_changing:
         is_changing = False
-        for rule in grammar.rules:
-            if len(rule.right) == 2:
-                A = rule.left
-                (B, C) = rule.right
-                before = matrices[A].count_nonzero()
-                product = matrices[B] * matrices[C]
-                matrices[A] = matrices[A] + product
-                after = matrices[A].count_nonzero()
-                if before < after:
-                    is_changing = True
+        for rule in rules:
+            A = rule.left
+            (B, C) = rule.right
+            before = matrices[A].count_nonzero()
+            product = matrices[B] * matrices[C]
+            matrices[A] = matrices[A] + product
+            after = matrices[A].count_nonzero()
+            if before < after:
+                is_changing = True
     rows, columns = matrices[grammar.initial].nonzero()
     return set(zip(rows, columns))
 
@@ -96,7 +100,7 @@ def cfpq_tensor_product(initial, grammar, graph):
         labels = set(graph_matrices.keys()).intersection(grammar_matrices.keys())
         for l in labels:
             matrix = matrix + kron(grammar_matrices[l], graph_matrices[l])
-        matrix = transitive_closure(matrix, k)
+        matrix = transitive_closure2(matrix, k)
         rows, columns = matrix.nonzero()
         for pair in zip(rows, columns):
             ni, nj, mi, mj = get_coordinates(pair, m)
@@ -112,7 +116,7 @@ def constant_factory(n):
     return next(itertools.repeat(lil_matrix(n, n)))
 
 
-def transitive_closure(matrix, k):
+def transitive_closure1(matrix, k):
     G = nx.DiGraph(matrix)
     paths = nx.all_pairs_shortest_path_length(G)
     matrix = lil_matrix((k, k))
@@ -120,6 +124,14 @@ def transitive_closure(matrix, k):
         for v, length in d.items():
             if length > 0:
                 matrix[u, v] = 1
+    return matrix
+
+
+def transitive_closure2(matrix, k):
+    pow = 1
+    while pow < k:
+        matrix = matrix + matrix ** 2
+        pow *= 2
     return matrix
 
 

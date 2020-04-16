@@ -41,10 +41,4 @@ def load_grammar(grammar_file):
                 initial = nonterm
             regex = line[2:].replace('eps', '').replace(' ', '')
             grammar[nonterm] = fsm_handler.regex_to_dfsm(regex)
-    return (initial, grammar)
-
-
-if __name__ == '__main__':
-    grammar = load_grammar('C:/Users/Aleksandrina/Desktop/streltsova.aleksandrina/formal-language/spring-2020-formal-language/tests/grammar11_fsm.txt')
-    for fsm in grammar.values():
-        print(fsm)
+    return initial, grammar
