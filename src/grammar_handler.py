@@ -28,6 +28,7 @@ class Grammar:
         self.term_alphabet = set()
         self.initial = 'S'
         self.epsilon = 'eps'
+        self.capitalized_normally = True
 
     def __str__(self):
         result = ''
@@ -172,7 +173,7 @@ class Grammar:
         graph.add_nodes_from(self.nonterm_alphabet)
         graph.add_edges_from(edges)
         for nonterm in self.nonterm_alphabet:
-            if not nx.has_path(graph, 'S', nonterm):
+            if not nx.has_path(graph, self.initial, nonterm):
                 nonaccess_nonterms.add(nonterm)
 
         for rule in self.rules:
@@ -203,7 +204,7 @@ class Grammar:
                             new_nonterm = symbol + str(index)
                             self.nonterm_alphabet.add(new_nonterm)
                             term_to_nonterm[term] = new_nonterm
-                            new_rules.add(Rule(new_nonterm, tuple(term)))
+                            new_rules.add(Rule(new_nonterm, (term,)))
                         new_term = term_to_nonterm[term]
                     new_right.append(new_term)
                 new_right = tuple(new_right)
@@ -214,11 +215,13 @@ class Grammar:
 
     def __generate_nonterm(self):
         alphabet = map(lambda term: ''.join([c for c in term if not c.isdigit()]), list(self.nonterm_alphabet))
-        symbol = 'A'
+        a = 'A' if self.capitalized_normally else 'a'
+        z = 'Z' if self.capitalized_normally else 'z'
+        symbol = a
         if len(self.nonterm_alphabet) != 0:
             max_symbol = max(alphabet)
-            if max_symbol[-1] == 'Z':
-                symbol = max_symbol + 'A'
+            if max_symbol[-1] == z:
+                symbol = max_symbol + a
             else:
                 symbol = max_symbol[:-1] + chr(ord(max_symbol[-1]) + 1)
         return symbol, 0
@@ -238,11 +241,18 @@ class Grammar:
 
     def add_symbols_from_iterable(self, iterable):
         for symbol in iterable:
-            if symbol != self.epsilon:
-                if symbol.lower() == symbol:
-                    self.term_alphabet.add(symbol)
-                else:
-                    self.nonterm_alphabet.add(symbol)
+            if self.capitalized_normally:
+                if symbol != self.epsilon:
+                    if symbol.lower() == symbol:
+                        self.term_alphabet.add(symbol)
+                    else:
+                        self.nonterm_alphabet.add(symbol)
+            else:
+                if symbol != self.epsilon:
+                    if symbol.lower() == symbol:
+                        self.nonterm_alphabet.add(symbol)
+                    else:
+                        self.term_alphabet.add(symbol)
 
     def instead_eps_rules(self, eps_nonterms, left, list_left, list_right):
         eps_term_index = -1
