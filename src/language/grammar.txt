@@ -1,0 +1,29 @@
+script EPS
+script stmt SEMI script
+stmt KW_CONNECT KW_TO STRING
+stmt KW_LIST
+stmt select_stmt
+stmt NT_NAME OP_EQ pattern
+select_stmt KW_SELECT obj_expr KW_FROM STRING KW_WHERE where_expr
+obj_expr vs_info
+obj_expr KW_COUNT vs_info
+obj_expr KW_EXISTS vs_info
+where_expr LBRACE v_expr RBRACE pattern OP_ARROW LBRACE v_expr RBRACE
+vs_info IDENT
+vs_info LBRACE IDENT COMMA IDENT RBRACE
+v_expr IDENT
+v_expr UNDERSCORE
+v_expr IDENT DOT KW_ID OP_EQ INT
+pattern alt_elem
+pattern alt_elem OP_OR pattern
+alt_elem seq
+alt_elem KW_EPS
+seq seq_elem
+seq seq_elem seq
+seq_elem prim_pattern
+seq_elem prim_pattern OP_STAR
+seq_elem prim_pattern OP_PLUS
+seq_elem prim_pattern OP_QUEST
+prim_pattern IDENT
+prim_pattern NT_NAME
+prim_pattern LBRACE pattern RBRACE
