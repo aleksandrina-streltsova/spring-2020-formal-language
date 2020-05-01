@@ -1,4 +1,4 @@
-from src.language.language_handler import parse_language, load_program, valid_program
+from src.language.cyk.language_handler import parse_language, load_program, valid_program
 
 
 def test_language_contains_word():

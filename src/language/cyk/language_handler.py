@@ -8,7 +8,7 @@ def parse_language():
     language = Grammar()
     language.capitalized_normally = False
     language.epsilon = epsilon
-    language.parse('src/language/grammar.txt')
+    language.parse('src/language/cyk/grammar.txt')
     language.to_cnf()
     return language
 
