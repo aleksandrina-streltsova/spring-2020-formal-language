@@ -4,8 +4,11 @@
 
 ## Сборка на Linux
     pip install -r requirements.txt
+    antlr4 -Dlanguage=Python3 src/language/antlr/query.g4 -o src/language/antlr
 ## Запуск тестов
     pytest 
+## Консольный клиент
+    python main.py
 ## Язык запросов к графам
 ### Синтаксис
 ##### Основной синтаксис
