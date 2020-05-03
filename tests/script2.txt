@@ -1,0 +1,3 @@
+connect to "grammarfile" ;
+S = S a S b | eps ;
+select count (u, v) from "graph" where (u) S -> (v) ;
