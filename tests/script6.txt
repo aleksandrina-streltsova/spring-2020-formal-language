@@ -1,0 +1,3 @@
+connect to "grammarfile" ;
+S = (S a)+ | S b | eps ;
+select exists (u, v) from "graph" where (u) ((a | b | c)* | S+) | d -> (v) ;

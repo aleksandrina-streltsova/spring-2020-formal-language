@@ -4,8 +4,11 @@
 
 ## Сборка на Linux
     pip install -r requirements.txt
+    antlr4 -Dlanguage=Python3 src/language/antlr/query.g4 -o src/language/antlr
 ## Запуск тестов
     pytest 
+## Консольный клиент
+    python main.py
 ## Язык запросов к графам
 ### Синтаксис
 ##### Основной синтаксис
@@ -51,7 +54,7 @@ DOT = '.'
 ```
 ##### Литералы
 ```
-STRING = '"'([aA-zZ]|[0-9]|('-'|' '|'/'|'.'|','))*'"' 
+STRING = '"'([A-Za-z]|[0-9]|('-'|' '|'/'|'.'|','))*'"' 
 INT = 0|[1-9][0-9]*
 NT_NAME = [A-Z]+
 IDENT = [a-z]+
