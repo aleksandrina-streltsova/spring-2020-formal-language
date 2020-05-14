@@ -2,6 +2,7 @@ from antlr4 import *
 from antlr4.error.ErrorListener import ErrorListener
 from src.language.antlr.queryLexer import queryLexer
 from src.language.antlr.queryParser import queryParser
+from src.language.antlr.query_visitor import queryVisitorImpl
 
 
 class QueryTreeWalker:
@@ -77,3 +78,12 @@ def print_script_tree(stream, outputfile):
         for child_index in child_indices:
             outputfile.write('\t' + str(index) + ' -> ' + str(child_index) + ';\n')
     outputfile.write('}')
+
+
+def run_script(stream):
+    tree = parse_script(stream)
+    if tree is None:
+        print("couldn't run the script")
+        return
+    visitor = queryVisitorImpl()
+    return visitor.visit(tree)

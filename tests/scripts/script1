@@ -1,0 +1,5 @@
+connect to "tests/graph1.txt";
+connect to "tests/graph3.txt";
+list;
+connect to "tests/graph4.txt";
+list;

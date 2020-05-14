@@ -1,7 +1,11 @@
 language: python
 python:
   - "3.7"
+before_install:
+  - sudo apt-get update
+  - sudo apt-get install antlr4
 install:
   - pip install -r requirements.txt
 script:
-  - pytest --ignore test_query.py
+  - antlr4 -Dlanguage=Python3 ./src/language/antlr/query.g4 -visitor -o ./src/language/antlr
+  - pytest
