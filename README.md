@@ -4,7 +4,7 @@
 
 ## Сборка на Linux
     pip install -r requirements.txt
-    antlr4 -Dlanguage=Python3 src/language/antlr/query.g4 -visitor -o src/language/antlr
+    antlr4 -Dlanguage=Python3 src/language/antlr/query.g4 -visitor
 ## Запуск тестов
     pytest 
 ## Консольный клиент
