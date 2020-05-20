@@ -21,3 +21,4 @@ select exists u from "tests/graph1.txt" where (_) S -> (v);
 select exists (u, u) from "tests/graph1.txt" where (_) S -> (_);
 select exists (u, v) from "tests/graph1.txt" where (w) S -> (v);
 select exists (u, v) from "tests/graph1.txt" where (u) S -> (w);
+select exists (u, v) from "tests/graph1.txt" where (u) a* | b* -> (v);
