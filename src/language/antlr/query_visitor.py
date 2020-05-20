@@ -147,14 +147,18 @@ class queryVisitorImpl(queryVisitor):
             connected_vertices = list(filter(lambda p: p[1] == int(v2[1]), connected_vertices))
             v2 = v2[0]
         if len(vs_info) == 2:
+            if vs_info[0] == vs_info[1]:
+                return 'expected variables with different names\n'
+            acceptable_vs = {vs_info[0], vs_info[1], self.__underscore}
+            if v1 not in acceptable_vs:
+                return 'unexpected variable name: \'' + v1 + '\'\n'
+            if v2 not in acceptable_vs:
+                return 'unexpected variable name: \'' + v2 + '\'\n'
             if (v1 == vs_info[0] or v1 == self.__underscore) and (
                     v2 == vs_info[1] or v2 == self.__underscore):
                 result = connected_vertices
-            elif (v1 == vs_info[1] or v1 == self.__underscore) and (
-                    v2 == vs_info[0] or v2 == self.__underscore):
-                result = list(map(lambda p: (p[1], p[0]), connected_vertices))
             else:
-                return 'invalid syntax\n'
+                result = list(map(lambda p: (p[1], p[0]), connected_vertices))
         else:
             if vs_info[0] == v1 and vs_info[0] == v2:
                 result = list(set(map(lambda p: p[0], filter(lambda p: p[0] == p[1], connected_vertices))))
@@ -163,7 +167,7 @@ class queryVisitorImpl(queryVisitor):
             elif vs_info[0] == v2:
                 result = list(set(map(lambda p: p[1], connected_vertices)))
             else:
-                return 'invalid syntax\n'
+                return 'expected \'' + str(vs_info[0]) + '\' in where expression\n'
         result.sort()
         if len(obj_expr) == 1:
             return '[' + ', '.join(map(str, result)) + ']\n'

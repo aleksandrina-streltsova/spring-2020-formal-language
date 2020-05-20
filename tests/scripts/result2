@@ -12,3 +12,7 @@ True
 True
 True
 False
+expected 'u' in where expression
+expected variables with different names
+unexpected variable name: 'w'
+unexpected variable name: 'w'
