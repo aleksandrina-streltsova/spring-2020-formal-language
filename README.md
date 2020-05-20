@@ -4,7 +4,7 @@
 
 ## Сборка на Linux
     pip install -r requirements.txt
-    antlr4 -Dlanguage=Python3 src/language/antlr/query.g4 -o src/language/antlr
+    antlr4 -Dlanguage=Python3 src/language/antlr/query.g4 -visitor
 ## Запуск тестов
     pytest 
 ## Консольный клиент
@@ -54,9 +54,9 @@ DOT = '.'
 ```
 ##### Литералы
 ```
-STRING = '"'([A-Za-z]|[0-9]|('-'|' '|'/'|'.'|','))*'"' 
+STRING = '"'([A-Za-z]|[0-9]|('-'|' '|'/'|'.'|','|'_'))*'"' 
 INT = 0|[1-9][0-9]*
-NT_NAME = [A-Z]+
+NT_NAME = [A-Z]+([1-9][0-9]*)?
 IDENT = [a-z]+
 ```
 ##### Операторы

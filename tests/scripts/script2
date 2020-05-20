@@ -1,0 +1,8 @@
+S = A B | A S1;
+A = a;
+B = b;
+S1 = S B;
+connect to "tests/graph1.txt";
+select exists (u, v) from "some_graph" where (u) S -> (v);
+select exists (u, v) from "tests/graph1.txt" where (u) S -> (v);
+select exists (u, v) from "tests/graph1.txt" where (u) c+ -> (v);
