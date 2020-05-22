@@ -1,0 +1,6 @@
+tests/graph1.txt
+tests/graph3.txt
+tests/database/dir/graph2
+tests/database/dir/graph3
+tests/database/graph1
+database isn't loaded
