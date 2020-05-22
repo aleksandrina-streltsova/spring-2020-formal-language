@@ -14,8 +14,7 @@
 ##### Основной синтаксис
 ```
 script       -> EPS | stmt SEMI script
-stmt         -> KW_CONNECT KW_TO STRING | KW_CONNECT KW_TO KW_DATABASE STRING 
-                | KW_LIST STRING? KW_LIST STRING? | select_stmt | NT_NAME OP_EQ pattern
+stmt         -> KW_CONNECT KW_TO STRING | KW_LIST | select_stmt | NT_NAME OP_EQ pattern
 select_stmt  -> KW_SELECT obj_expr KW_FROM STRING KW_WHERE where_expr 
 obj_expr     -> vs_info | KW_COUNT vs_info | KW_EXISTS vs_info 
 where_expr   -> LBRACE v_expr RBRACE pattern OP_ARROW LBRACE v_expr RBRACE
@@ -43,7 +42,6 @@ KW_COUNT = 'count'
 KW_EXISTS = 'exists'
 KW_ID = 'id'
 KW_EPS = 'eps'
-KW_DATABASE = 'database'
 ```
 ##### Разделители
 ```
@@ -75,17 +73,9 @@ OP_QUEST = '?'
 ```
 connect to "tests/graph.txt";
 ```
-вывод списка всех загруженных графов :
+вывод списка всех загруженных графов:
 ```
 list;
-```
-загрузка папки с графами:
-```
-connect to database "tests/graphs";
-```
-вывод списка графов из загруженной папки:
-```
-list "tests/graphs";
 ```
 добавление правила в грамматику:
 ```

@@ -195,5 +195,6 @@ class queryVisitorImpl(queryVisitor):
         filelist = []
         for root, _, files in os.walk(path):
             for file in files:
-                filelist.append(root.replace('\\', '/') + '/' + file)
+                filelist.append(root + '/' + file)
+        filelist.sort()
         self.databases[path] = filelist
