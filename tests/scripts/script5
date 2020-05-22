@@ -1,0 +1,6 @@
+connect to "tests/graph1.txt";
+connect to "tests/graph3.txt";
+connect to database "tests/database";
+list;
+list "tests/database";
+list "tests/scripts";

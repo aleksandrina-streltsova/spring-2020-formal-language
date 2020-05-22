@@ -3,7 +3,8 @@ grammar query;
 script : stmt* EOF ;
 
 stmt : (KW_CONNECT KW_TO STRING
-      | KW_LIST
+      | KW_CONNECT KW_TO KW_DATABASE STRING
+      | KW_LIST STRING?
       | select_stmt
       | NT_NAME OP_EQ pattern)
       SEMI ;
@@ -42,6 +43,7 @@ KW_COUNT : 'count' ;
 KW_EXISTS : 'exists' ;
 KW_ID : 'id' ;
 KW_EPS : 'eps' ;
+KW_DATABASE : 'database' ;
 
 SEMI : ';' ;
 COMMA : ',' ;

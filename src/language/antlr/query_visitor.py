@@ -1,3 +1,5 @@
+import os
+
 from src.cyk_hellings import hellings
 from src.grammar_handler import Grammar, Rule
 from src.language.antlr.queryParser import queryParser
@@ -13,6 +15,7 @@ class queryVisitorImpl(queryVisitor):
         self.__count = 'count'
         self.__exists = 'exists'
         self.__underscore = '_'
+        self.databases = {}
 
     def visitScript(self, ctx: queryParser.ScriptContext):
         result = ''
@@ -25,12 +28,23 @@ class queryVisitorImpl(queryVisitor):
     def visitStmt(self, ctx: queryParser.StmtContext):
         result = ''
         if ctx.KW_LIST() is not None:
-            for graph in self.graphs:
-                result += graph + '\n'
+            if ctx.STRING() is not None:
+                db = ctx.STRING().getText()[1:-1]
+                if db not in self.databases:
+                    result += 'database isn\'t loaded\n'
+                else:
+                    for graph in self.databases[db]:
+                        result += graph + '\n'
+            else:
+                for graph in self.graphs:
+                    result += graph + '\n'
             return result
         if ctx.KW_CONNECT() is not None:
-            graph_file = ctx.STRING().getText()[1:-1]
-            self.graphs[graph_file] = load_graph(graph_file)
+            path = ctx.STRING().getText()[1:-1]
+            if ctx.KW_DATABASE() is not None:
+                self.__connect_to_database(path)
+            else:
+                self.graphs[path] = load_graph(path)
             return None
         if ctx.OP_EQ() is not None:
             left = ctx.NT_NAME().getText()
@@ -174,3 +188,12 @@ class queryVisitorImpl(queryVisitor):
         if obj_expr[1] == self.__exists:
             return str(len(result) > 0) + '\n'
         return str(len(result)) + '\n'
+
+    def __connect_to_database(self, path):
+        if path in self.databases:
+            return
+        filelist = []
+        for root, _, files in os.walk(path):
+            for file in files:
+                filelist.append(root.replace('\\', '/') + '/' + file)
+        self.databases[path] = filelist

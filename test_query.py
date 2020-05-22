@@ -47,6 +47,8 @@ def test_run_script():
     assert (actual3 == expected3)  # select: count
     actual4, expected4 = result_matches_script('tests/scripts/script4', 'tests/scripts/result4')
     assert (actual4 == expected4)  # select
+    actual5, expected5 = result_matches_script('tests/scripts/script5', 'tests/scripts/result5')
+    assert (actual5 == expected5)  # connect to database
 
 def test_query_visitor_grammar():
     grammar1 = grammar_from_script('tests/scripts/grammar1')  # pattern, alt_elem
